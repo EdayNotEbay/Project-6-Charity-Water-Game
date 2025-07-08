@@ -6,7 +6,7 @@
 const GAME_WIDTH = 900;
 const GAME_HEIGHT = 520;
 const PLAYER_Y = 48;
-const DOG_START_X = -40;
+const DOG_START_X = 10; // Updated from -40 to match CSS position
 const PLAYER_X = 170;
 const GROUND_HEIGHT = 45;
 const BACKGROUND_SPEED = 5.8; // px per tick
@@ -15,15 +15,15 @@ const DOOR_SPAWN_DIST = 380; // px
 const OBSTACLE_MIN_DIST = 230; // px
 const OBSTACLE_MAX_DIST = 410;
 const TICK_INTERVAL = 18; // ms, ~55fps
-const JUMP_VELOCITY = 15;
-const GRAVITY = 1.09;
+const JUMP_VELOCITY = 22; // Increased from 15 for higher jumps
+const GRAVITY = 1.09; // Changed back to original value for normal fall speed
 const PLAYER_WIDTH = 50;
 const PLAYER_HEIGHT = 120;
 const DOG_WIDTH = 100;
 const DOOR_WIDTH = 56;
 const DOOR_HEIGHT = 100;
-const HYDRANT_WIDTH =  18;
-const HYDRANT_HEIGHT = 36;
+const HYDRANT_WIDTH = 42; // Updated to match CSS width
+const HYDRANT_HEIGHT = 95; // Updated to match CSS height
 
 // ====== GAME STATE ======
 let gameState = "start"; // start, running, gameover

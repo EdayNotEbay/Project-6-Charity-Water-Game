@@ -198,11 +198,13 @@ body {
   object-fit: contain; /* Make sure the image scales nicely */
   margin: 0;
   padding: 0;
+  user-select: none; /* Prevents text/image selection on player */
+  pointer-events: none; /* Prevents mouse events like click/drag highlight */
 }
 .dog {
   position: absolute;
   bottom: 0; /* Stand on top of the yellow ground */
-  left: -40px;
+  left: 10px; /* Moved right from -40px to show the whole dog */
   width: 110px;
   height: 70px;
   z-index: 20;
@@ -211,6 +213,8 @@ body {
   object-fit: contain;
   margin: 0;
   padding: 0;
+  user-select: none; /* Prevents text/image selection on dog */
+  pointer-events: none; /* Prevents mouse events like click/drag highlight */
 }
 
 /* Door (clickable) */
@@ -220,9 +224,10 @@ body {
   bottom: 179px; /* Move door down to touch the grass */
   width: 56px;
   height: 100px;
-  background: #fff;
-  border: 3px solid #ddd;
-  border-radius: 5px;
+  background: url('img/pixel_door.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   z-index: 15;
   transition: box-shadow 0.15s, border 0.15s;
   cursor: pointer;
@@ -232,38 +237,22 @@ body {
   box-shadow: 0 0 22px 8px var(--glow-blue), 0 0 0 3px #20d8ff;
   border: 3px solid var(--glow-blue);
 }
-.door::after {
-  content: "";
-  display: block;
-  width: 20px;
-  height: 30px;
-  background: #e2e9f8;
-  border-radius: 3px;
-  position: absolute;
-  left: 18px; top: 16px;
-  opacity: 0.5;
-}
 
-/* Obstacles (hydrant) now 30% player size */
+/* Obstacles (hydrant) - Clean version with correct image */
 .hydrant {
   position: absolute;
   /* Place the hydrant on the grass */
-  bottom: 179px; /* Move hydrant down to touch the grass */
-  width: 18px;
-  height: 36px;
-  background: #ec3b18;
-  border-radius: 6px;
+  bottom: 152px; /* Moved down from 179px to touch the yellow ground */
+  width: 42px;
+  height: 95px;
+  background: url('img/fire_hydrant_2.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   z-index: 13;
-  box-shadow: 0 2px 12px #0003;
-}
-.hydrant::before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: -7px; left: 1px;
-  width: 16px; height: 10px;
-  background: #ec3b18;
-  border-radius: 12px 12px 8px 8px;
+  /* Removed box-shadow to eliminate the box around the image */
+  user-select: none; /* Prevents text/image selection on player */
+  pointer-events: none; /* Prevents mouse events like click/drag highlight */
 }
 
 .confetti {
@@ -354,5 +343,5 @@ body {
   .player-img { width: 43px; height: 66px;}
   .doghouse-img { width: 82px; height: 82px;}
   .door { width: 37px; height: 60px;}
-  .hydrant { width: 12px; height: 22px;}
+  .hydrant { width: 12px; height: 22px; } /* Reverted to original mobile sizes */
 }

@@ -1,0 +1,358 @@
+/* Charity: water Brand Colors
+
+Primary Colors:
+- Yellow:     #FFC907
+- Blue:       #2E9DF7
+
+Secondary Colors:
+- Light Blue: #8BD1CB
+- Green:      #4FCB53
+- Orange:     #FF902A
+- Red:        #F5402C
+- Dark Green: #159A48
+- Pink:       #F16061
+
+*/
+
+:root {
+  --score-bg: #f5cb23;
+  --score-color: #212121;
+  --glow-blue: #55ccff;
+  --brand-yellow: #ffe066;
+  --game-bg: #9ddcff;
+  --ground: #ffd86b;
+  --game-width: 98vw;
+  --game-height: 80vh;
+}
+
+body {
+  margin: 0;
+  background: #181818;
+  font-family: 'Roboto', Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+#game-container {
+  width: var(--game-width);
+  max-width: 1600px;
+  height: var(--game-height);
+  max-height: 760px;
+  margin: 32px auto;
+  background: var(--game-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #0008;
+  position: relative;
+  overflow: hidden;
+  border: 6px solid #222;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 28px 0 28px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+.game-header .logo {
+  width: 100px;
+  margin: 0 auto 0 auto;
+  display: block;
+}
+.score-box {
+  background: var(--score-bg);
+  color: var(--score-color);
+  font-size: 1.3em;
+  font-weight: bold;
+  padding: 6px 18px;
+  border-radius: 7px;
+  margin: 0 14px;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 2px 7px #0002;
+  letter-spacing: 1px;
+  user-select: none;
+}
+
+/* Start Overlay */
+#start-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(24,24,24,0.9);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s;
+}
+#start-overlay.hide {
+  pointer-events: none;
+  opacity: 0;
+}
+#start-overlay .start-btn {
+  background: #111;
+  color: #f75e5e;
+  font-size: 2em;
+  padding: 18px 56px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px #0007;
+  transition: background 0.2s;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+#start-overlay .start-btn:hover {
+  background: #222;
+  color: #fff;
+}
+#start-overlay .desc {
+  color: #fff;
+  font-size: 1.15em;
+  max-width: 420px;
+  text-align: center;
+  margin-bottom: 34px;
+  margin-top: 10px;
+}
+.doghouse-scene {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  width: 85%;
+  margin: 0 auto;
+  justify-content: center;
+}
+.doghouse-img {
+  width: 135px;
+  height: 135px;
+  background: none;
+  margin-bottom: -12px;
+}
+.player-img {
+  width: 70px;
+  height: 120px;
+  margin: 0;
+  z-index: 2;
+}
+.houses-img {
+  width: 340px;
+  margin-bottom: 6px;
+  z-index: 1;
+}
+
+/* GAME MAIN LAYER */
+#game-main {
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+  position: relative; /* Make this container positioned for absolute children */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.background-houses {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: calc(100% - 45px); /* Fill down to the yellow ground */
+  z-index: 1;
+  background: url('img/2d_Houses_edit.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  background-position-x: 0;
+  transition: background-position 0.1s linear;
+}
+.ground {
+  position: relative; /* Make ground the positioned ancestor */
+  left: 0; right: 0; bottom: 0;
+  height: 45px;
+  background: var(--ground);
+  z-index: 7;
+  box-shadow: 0 -3px 16px #0003;
+  /* no blue! */
+}
+.ground-hitbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 120px; /* Sits directly above the yellow ground */
+  height: 150px;  /* Adjust this so the top matches the grass level */
+  /* background: rgba(0,255,0,0.1);  Uncomment for debugging */
+  z-index: 10;
+}
+
+/* Game objects (player, dog, obstacles, doors) */
+.player {
+  position: absolute;
+  bottom: 0; /* Stand on top of the yellow ground */
+  left: 170px;
+  width: 70px;
+  height: 120px;
+  z-index: 30;
+  filter: drop-shadow(1px 3px 7px #3333);
+  transition: bottom 0.08s;
+  object-fit: contain; /* Make sure the image scales nicely */
+  margin: 0;
+  padding: 0;
+}
+.dog {
+  position: absolute;
+  bottom: 0; /* Stand on top of the yellow ground */
+  left: -40px;
+  width: 110px;
+  height: 70px;
+  z-index: 20;
+  transition: left 0.13s;
+  filter: drop-shadow(1px 2px 4px #0005);
+  object-fit: contain;
+  margin: 0;
+  padding: 0;
+}
+
+/* Door (clickable) */
+.door {
+  position: absolute;
+  /* Place the door on the grass */
+  bottom: 179px; /* Move door down to touch the grass */
+  width: 56px;
+  height: 100px;
+  background: #fff;
+  border: 3px solid #ddd;
+  border-radius: 5px;
+  z-index: 15;
+  transition: box-shadow 0.15s, border 0.15s;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.door.glow {
+  box-shadow: 0 0 22px 8px var(--glow-blue), 0 0 0 3px #20d8ff;
+  border: 3px solid var(--glow-blue);
+}
+.door::after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 30px;
+  background: #e2e9f8;
+  border-radius: 3px;
+  position: absolute;
+  left: 18px; top: 16px;
+  opacity: 0.5;
+}
+
+/* Obstacles (hydrant) now 30% player size */
+.hydrant {
+  position: absolute;
+  /* Place the hydrant on the grass */
+  bottom: 179px; /* Move hydrant down to touch the grass */
+  width: 18px;
+  height: 36px;
+  background: #ec3b18;
+  border-radius: 6px;
+  z-index: 13;
+  box-shadow: 0 2px 12px #0003;
+}
+.hydrant::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -7px; left: 1px;
+  width: 16px; height: 10px;
+  background: #ec3b18;
+  border-radius: 12px 12px 8px 8px;
+}
+
+.confetti {
+  position: absolute;
+  left: 50%; top: 15%;
+  transform: translate(-50%, 0);
+  z-index: 105;
+  font-size: 2.1em;
+  background: #fff4be;
+  color: #f9a602;
+  padding: 13px 48px;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px #0003;
+  border: 2px solid #ffe29a;
+  display: none;
+  animation: confettiFade 1.6s linear forwards;
+  pointer-events: none;
+}
+@keyframes confettiFade {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.8);}
+  15% { opacity: 1; transform: translate(-50%, -20px) scale(1);}
+  85% { opacity: 1;}
+  100% { opacity: 0; transform: translate(-50%, -90px) scale(1.08);}
+}
+
+#game-over-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20,20,20,0.94);
+  z-index: 120;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 1.7em;
+  transition: opacity 0.6s;
+}
+#game-over-overlay.show {
+  display: flex;
+  animation: fadeIn 0.9s;
+}
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+.game-over-title {
+  font-size: 2.1em;
+  color: #e95050;
+  margin-bottom: 12px;
+  letter-spacing: 1.1px;
+  text-shadow: 0 2px 8px #1119;
+}
+.scoreboard {
+  background: #fff;
+  color: #292929;
+  padding: 18px 32px;
+  border-radius: 12px;
+  margin-bottom: 26px;
+  font-size: 1.15em;
+  box-shadow: 0 4px 24px #0002;
+  min-width: 220px;
+}
+.reset-btn {
+  background: #212121;
+  color: #ffe066;
+  font-size: 1.3em;
+  border: none;
+  padding: 10px 38px;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.15s;
+  box-shadow: 0 2px 14px #0003;
+}
+.reset-btn:hover {
+  background: #3a3a3a;
+  color: #fff7b6;
+}
+
+/* Responsive for mobile */
+@media (max-width: 900px) {
+  #game-container { max-width: 100vw; }
+  .game-header .logo { width: 64px;}
+  .score-box { font-size: 1em; min-width: 75px;}
+  .houses-img { width: 220px;}
+  .player-img { width: 43px; height: 66px;}
+  .doghouse-img { width: 82px; height: 82px;}
+  .door { width: 37px; height: 60px;}
+  .hydrant { width: 12px; height: 22px;}
+}

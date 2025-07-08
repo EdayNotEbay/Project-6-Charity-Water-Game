@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Charity Water Run</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-container">
+    <!-- HEADER (Scores + Branding) -->
+    <div class="game-header">
+      <div class="score-box" id="distance-score">Distance (ft): 0</div>
+      <img class="logo" src="img/charity_water_logo.png" alt="Charity Water logo"/>
+      <div class="score-box" id="water-score">Water Delivered: 0</div>
+    </div>
+    <!-- START OVERLAY -->
+    <div id="start-overlay">
+      <button class="start-btn" id="start-btn">Start Game</button>
+      <div class="desc">
+        Run and deliver as much water as you can!<br>
+        Click the glowing door when you reach it to deliver water.<br>
+        Jump over obstacles (spacebar), and don’t let the dog catch you!
+      </div>
+      <div class="doghouse-scene">
+        <img src="img/2d_Character.png" class="player-img" id="start-player" alt="Player" />
+        <img src="img/2d_Dog_and_dog_house.png" class="doghouse-img" alt="Dog and doghouse" />
+        <img src="img/2d_Houses_edit.png" class="houses-img" alt="Houses" />
+      </div>
+    </div>
+    <!-- MAIN GAME LAYER -->
+    <div id="game-main">
+      <div class="background-houses" id="background-houses"></div>
+      <div class="ground-hitbox">
+        <!-- Player and Dog are now inside the invisible ground-hitbox layer -->
+        <img src="img/2d_Character.png" class="player" id="player" alt="Player" style="display:none"/>
+        <img src="img/2d_aggressive_dog.jpg" class="dog" id="dog" alt="Dog" style="display:none"/>
+      </div>
+      <div class="ground"></div>
+      <!-- Doors & Hydrants will be injected dynamically -->
+      <div class="confetti" id="confetti">🎉 Delivered!</div>
+    </div>
+    <!-- GAME OVER OVERLAY -->
+    <div id="game-over-overlay">
+      <div class="game-over-title">You Died</div>
+      <div class="scoreboard">
+        <div id="final-distance">Distance: 0 ft</div>
+        <div id="final-water">Water Delivered: 0</div>
+      </div>
+      <button class="reset-btn" id="reset-btn">Restart Game</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

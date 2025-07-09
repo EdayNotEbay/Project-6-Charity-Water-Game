@@ -15,12 +15,12 @@ Secondary Colors:
 */
 
 :root {
-  --score-bg: #f5cb23;
-  --score-color: #212121;
+  --score-bg: #FFC907; /* Changed from #f5cb23 */
+  --score-color: #1A1A1A ;
   --glow-blue: #55ccff;
-  --brand-yellow: #ffe066;
-  --game-bg: #9ddcff;
-  --ground: #ffd86b;
+  --brand-yellow: #FFC907; /* Changed from #ffe066 */
+  --game-bg: #1A1A1A ;
+  --ground: #FFC907; /* Changed from #ffd86b */
   --game-width: 98vw;
   --game-height: 80vh;
 }
@@ -28,7 +28,8 @@ Secondary Colors:
 body {
   margin: 0;
   background: #181818;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400; /* Regular weight for body text */
   overflow-x: hidden;
 }
 
@@ -46,6 +47,12 @@ body {
   border: 6px solid #222;
   display: flex;
   flex-direction: column;
+  border: 5px solid var(--brand-yellow);
+  /* Prevent text selection and double-click behavior */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .game-header {
@@ -53,20 +60,26 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 28px 0 28px;
+  padding: 8px 28px 8px 28px; /* Reduced padding to prevent pushing background down */
   box-sizing: border-box;
   z-index: 10;
+  height: 60px; /* Set fixed height for header */
+  pointer-events: none; /* Prevent clicking on header area */
 }
 .game-header .logo {
-  width: 100px;
+  width: auto; /* Let width adjust automatically */
+  height: 56px; /* Use almost all of the 60px header height */
+  max-height: 56px;
   margin: 0 auto 0 auto;
   display: block;
+  object-fit: contain; /* Maintain aspect ratio while filling space */
+  pointer-events: none; /* Prevent clicking on logo */
 }
 .score-box {
   background: var(--score-bg);
   color: var(--score-color);
   font-size: 1.3em;
-  font-weight: bold;
+  font-weight: 600; /* Medium weight for sub-headlines */
   padding: 6px 18px;
   border-radius: 7px;
   margin: 0 14px;
@@ -75,6 +88,7 @@ body {
   box-shadow: 0 2px 7px #0002;
   letter-spacing: 1px;
   user-select: none;
+  pointer-events: none; /* Prevent clicking on score boxes */
 }
 
 /* Start Overlay */
@@ -97,6 +111,7 @@ body {
   background: #111;
   color: #f75e5e;
   font-size: 2em;
+  font-weight: 300; /* Light weight for large headlines */
   padding: 18px 56px;
   border: none;
   border-radius: 8px;
@@ -104,19 +119,21 @@ body {
   cursor: pointer;
   box-shadow: 0 6px 16px #0007;
   transition: background 0.2s;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 #start-overlay .start-btn:hover {
   background: #222;
-  color: #fff;
+  color: #FFC907;
 }
 #start-overlay .desc {
-  color: #fff;
+  color: #FFC907;
   font-size: 1.15em;
+  font-weight: 400; /* Regular weight for body text */
   max-width: 420px;
   text-align: center;
   margin-bottom: 34px;
   margin-top: 10px;
+  pointer-events: none; /* Prevent clicking on description text */
 }
 .doghouse-scene {
   display: flex;
@@ -125,23 +142,27 @@ body {
   width: 85%;
   margin: 0 auto;
   justify-content: center;
+  pointer-events: none; /* Prevent clicking on doghouse scene */
 }
 .doghouse-img {
   width: 135px;
   height: 135px;
   background: none;
   margin-bottom: -12px;
+  pointer-events: none; /* Prevent clicking on doghouse image */
 }
 .player-img {
   width: 70px;
   height: 120px;
   margin: 0;
   z-index: 2;
+  pointer-events: none; /* Prevent clicking on player image */
 }
 .houses-img {
   width: 340px;
   margin-bottom: 6px;
   z-index: 1;
+  pointer-events: none; /* Prevent clicking on houses image */
 }
 
 /* GAME MAIN LAYER */
@@ -153,6 +174,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  /* Keep pointer-events: auto here to allow door clicking */
 }
 .background-houses {
   position: absolute;
@@ -165,6 +187,7 @@ body {
   background-repeat: repeat-x;
   background-position-x: 0;
   transition: background-position 0.1s linear;
+  pointer-events: none; /* Prevent clicking on background */
 }
 .ground {
   position: relative; /* Make ground the positioned ancestor */
@@ -174,6 +197,7 @@ body {
   z-index: 7;
   box-shadow: 0 -3px 16px #0003;
   /* no blue! */
+  pointer-events: none; /* Prevent clicking on ground */
 }
 .ground-hitbox {
   position: absolute;
@@ -183,6 +207,7 @@ body {
   height: 150px;  /* Adjust this so the top matches the grass level */
   /* background: rgba(0,255,0,0.1);  Uncomment for debugging */
   z-index: 10;
+  pointer-events: none; /* Prevent clicking on ground hitbox */
 }
 
 /* Game objects (player, dog, obstacles, doors) */
@@ -221,21 +246,23 @@ body {
 .door {
   position: absolute;
   /* Place the door on the grass */
-  bottom: 179px; /* Move door down to touch the grass */
+  bottom: 176px; /* Move door down to touch the grass */
   width: 56px;
   height: 100px;
   background: url('img/pixel_door.png');
-  background-size: contain;
+  background-size: 100% 100%; /* Stretch image to fill the door box */
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: top center; /* Align image to the top */
   z-index: 15;
-  transition: box-shadow 0.15s, border 0.15s;
+  transition: box-shadow 0.15s;
   cursor: pointer;
   box-sizing: border-box;
+  /* Keep pointer-events: auto (default) to allow door clicking */
 }
+
 .door.glow {
-  box-shadow: 0 0 22px 8px var(--glow-blue), 0 0 0 3px #20d8ff;
-  border: 3px solid var(--glow-blue);
+  /* Use the updated hex color for the glow */
+  box-shadow: 0 0 22px 8px #FFC907, 0 0 0 3px #FFC907;
 }
 
 /* Obstacles (hydrant) - Clean version with correct image */
@@ -261,16 +288,34 @@ body {
   transform: translate(-50%, 0);
   z-index: 105;
   font-size: 2.1em;
-  background: #fff4be;
-  color: #f9a602;
+  font-weight: 500; /* Medium weight */
+  background: white;
+  color: #FFC907;
   padding: 13px 48px;
   border-radius: 18px;
   box-shadow: 0 6px 24px #0003;
-  border: 2px solid #ffe29a;
+  border: 4px solid #FFC907;
   display: none;
   animation: confettiFade 1.6s linear forwards;
   pointer-events: none;
+  /* Add flexbox to arrange jerry can, text, and confetti */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+
+.confetti::before {
+  content: "";
+  width: 40px; /* Increased from 32px */
+  height: 40px; /* Increased from 32px to make it more pronounced */
+  background: url('img/jerry_can.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
 @keyframes confettiFade {
   0% { opacity: 0; transform: translate(-50%, 0) scale(0.8);}
   15% { opacity: 1; transform: translate(-50%, -20px) scale(1);}
@@ -288,8 +333,9 @@ body {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 1.7em;
+  font-weight: 400; /* Regular weight for body text */
   transition: opacity 0.6s;
 }
 #game-over-overlay.show {
@@ -302,25 +348,32 @@ body {
 }
 .game-over-title {
   font-size: 2.1em;
+  font-weight: 300; /* Light weight for large headlines */
   color: #e95050;
   margin-bottom: 12px;
   letter-spacing: 1.1px;
   text-shadow: 0 2px 8px #1119;
+  pointer-events: none; /* Prevent clicking on game over title */
 }
+
 .scoreboard {
-  background: #fff;
+  background: #FFC907;
   color: #292929;
   padding: 18px 32px;
   border-radius: 12px;
   margin-bottom: 26px;
   font-size: 1.15em;
+  font-weight: 500; /* Medium weight for sub-headlines */
   box-shadow: 0 4px 24px #0002;
   min-width: 220px;
+  pointer-events: none; /* Prevent clicking on scoreboard */
 }
+
 .reset-btn {
   background: #212121;
-  color: #ffe066;
+  color: #FFC907;
   font-size: 1.3em;
+  font-weight: 500; /* Medium weight */
   border: none;
   padding: 10px 38px;
   border-radius: 7px;
@@ -328,16 +381,20 @@ body {
   margin-top: 16px;
   transition: background 0.15s;
   box-shadow: 0 2px 14px #0003;
-}
-.reset-btn:hover {
-  background: #3a3a3a;
-  color: #fff7b6;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Responsive for mobile */
 @media (max-width: 900px) {
   #game-container { max-width: 100vw; }
-  .game-header .logo { width: 64px;}
+  .game-header {
+    height: 50px; /* Smaller header on mobile */
+  }
+  .game-header .logo { 
+    width: auto; /* Let width adjust automatically on mobile too */
+    height: 46px; /* Use almost all of the 50px mobile header height */
+    max-height: 46px;
+  }
   .score-box { font-size: 1em; min-width: 75px;}
   .houses-img { width: 220px;}
   .player-img { width: 43px; height: 66px;}

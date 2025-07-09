@@ -25,6 +25,12 @@ const DOOR_HEIGHT = 100;
 const HYDRANT_WIDTH = 42; // Updated to match CSS width
 const HYDRANT_HEIGHT = 95; // Updated to match CSS height
 
+// Add these constants for background and door offsets
+const BG_IMAGE_WIDTH = 800; // width of your background image in px
+const BLUE_HOUSE_DOOR_OFFSET = 90; // px from left of background image to blue house door
+const RED_HOUSE_DOOR_OFFSET = 390; // px from left of background image to red house door
+const DOOR_BOTTOM = 179; // same as .door CSS
+
 // ====== GAME STATE ======
 let gameState = "start"; // start, running, gameover
 let distance = 0;
@@ -217,6 +223,7 @@ function gameTick() {
         activeDoor = obj;
         doorCanBeClicked = true;
       } else {
+        // Only remove glow if door hasn't been delivered
         obj.el.classList.remove("glow");
       }
     }
@@ -242,8 +249,12 @@ function gameTick() {
   }
   if (!glowing) {
     doorCanBeClicked = false;
-    // Remove any previous glows
-    objects.forEach(obj => { if(obj.type==='door') obj.el.classList.remove("glow"); });
+    // Only remove glow from undelivered doors
+    objects.forEach(obj => { 
+      if(obj.type==='door' && !obj.delivered) {
+        obj.el.classList.remove("glow"); 
+      }
+    });
     activeDoor = null;
   }
 
@@ -284,13 +295,19 @@ function doorClickHandler(e) {
   // Only count click if in front of door and not already delivered
   if (!activeDoor.delivered) {
     activeDoor.delivered = true;
-    activeDoor.el.classList.remove("glow");
+    // Don't remove glow immediately - keep it for 5 seconds
     waterDelivered += 1;
     updateScores();
-    // Confetti animation
-    confettiDiv.style.display = 'block';
+    
+    // Set a timer to remove glow after 5 seconds
+    setTimeout(() => {
+      activeDoor.el.classList.remove("glow");
+    }, 5000); // 5 seconds
+    
+    // Confetti animation with jerry can on left, confetti emoji on right
+    confettiDiv.style.display = 'flex'; // Changed from 'block' to 'flex'
     confettiDiv.style.opacity = 1;
-    confettiDiv.textContent = '🎉 Delivered!';
+    confettiDiv.textContent = 'Delivered! 🎉'; // Moved emoji to the right
     if (confettiTimer) clearTimeout(confettiTimer);
     confettiTimer = setTimeout(() => {
       confettiDiv.style.display = 'none';
@@ -314,6 +331,22 @@ startBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
   gameOverOverlay.classList.remove('show');
   showStartOverlay();
+});
+
+// Prevent double-click text selection and context menus
+document.addEventListener('selectstart', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener('dblclick', (e) => {
+  e.preventDefault();
+  return false;
 });
 
 // ====== INIT ======

@@ -447,14 +447,14 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* Position distance milestone on the left side */
+/* Position distance milestone centered under the distance score */
 #distance-milestone {
-  left: 100px; /* Position below the distance score */
+  left: 50px; /* Move further left to center under distance score */
 }
 
-/* Position water milestone on the right side */
+/* Position water milestone centered under the water score */
 #water-milestone {
-  right: 100px; /* Position below the water score */
+  right: 50px; /* Move further right to center under water score */
 }
 
 /* Animation for milestone messages - fade down */

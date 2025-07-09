@@ -37,12 +37,15 @@ const dogBarkSound = new Audio('sounds/dog_bark.mp3');
 const jumpSound = new Audio('sounds/cartoony_jump_sound.mp3');
 const waterDeliverySound = new Audio('sounds/water_delivery_ding_sound.mp3');
 const gameOverSound = new Audio('sounds/game_over_sound.mp3');
+const backgroundMusic = new Audio('sounds/funny_chase_music.mp3');
 
 // Set volume levels (adjust as needed)
 dogBarkSound.volume = 0.5;
 jumpSound.volume = 0.4;
 waterDeliverySound.volume = 0.6;
 gameOverSound.volume = 0.7;
+backgroundMusic.volume = 0.3; // Keep background music quieter
+backgroundMusic.loop = true; // Make background music loop
 
 // Helper function to play sounds safely
 function playSound(audio) {
@@ -51,6 +54,16 @@ function playSound(audio) {
     audio.play();
   } catch (error) {
     console.log('Could not play sound:', error);
+  }
+}
+
+// Helper function to stop sounds safely
+function stopSound(audio) {
+  try {
+    audio.pause();
+    audio.currentTime = 0; // Reset to beginning
+  } catch (error) {
+    console.log('Could not stop sound:', error);
   }
 }
 
@@ -169,6 +182,9 @@ function startGame() {
   
   // Play dog bark sound when game starts
   playSound(dogBarkSound);
+  
+  // Start background music
+  playSound(backgroundMusic);
 }
 
 function endGame() {
@@ -176,6 +192,9 @@ function endGame() {
   gameState = "gameover";
   document.removeEventListener('keydown', jumpHandler);
   gameMain.removeEventListener('mousedown', doorClickHandler);
+  
+  // Stop background music when game ends
+  stopSound(backgroundMusic);
   
   // Play game over sound
   playSound(gameOverSound);
@@ -371,6 +390,8 @@ startBtn.addEventListener('click', () => {
   setTimeout(startGame, 500); // let overlay fade out
 });
 resetBtn.addEventListener('click', () => {
+  // Stop background music when restarting
+  stopSound(backgroundMusic);
   gameOverOverlay.classList.remove('show');
   showStartOverlay();
 });

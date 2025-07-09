@@ -38,6 +38,8 @@ const jumpSound = new Audio('sounds/cartoony_jump_sound.mp3');
 const waterDeliverySound = new Audio('sounds/water_delivery_ding_sound.mp3');
 const gameOverSound = new Audio('sounds/game_over_sound.mp3');
 const backgroundMusic = new Audio('sounds/funny_chase_music.mp3');
+const distanceMilestoneSound = new Audio('sounds/distance_milestone_sound.mp3');
+const waterMilestoneSound = new Audio('sounds/water_delivery_milestone_sound.mp3');
 
 // Set volume levels (adjust as needed)
 dogBarkSound.volume = 0.5;
@@ -45,6 +47,8 @@ jumpSound.volume = 0.4;
 waterDeliverySound.volume = 0.6;
 gameOverSound.volume = 0.7;
 backgroundMusic.volume = 0.3; // Keep background music quieter
+distanceMilestoneSound.volume = 0.5;
+waterMilestoneSound.volume = 0.5;
 backgroundMusic.loop = true; // Make background music loop
 
 // Helper function to play sounds safely
@@ -263,26 +267,31 @@ function checkDistanceMilestones(currentDistance) {
   if (currentDistance >= 100 && lastDistanceMilestone === 0) {
     const message = `You traveled 100 feet!`;
     console.log(`NEW DISTANCE MILESTONE REACHED: 100`);
+    playSound(distanceMilestoneSound); // Play distance milestone sound
     showMilestone('distance-milestone', message);
     lastDistanceMilestone = 100;
   } else if (currentDistance >= 500 && lastDistanceMilestone === 100) {
     const message = `You traveled 500 feet!`;
     console.log(`NEW DISTANCE MILESTONE REACHED: 500`);
+    playSound(distanceMilestoneSound); // Play distance milestone sound
     showMilestone('distance-milestone', message);
     lastDistanceMilestone = 500;
   } else if (currentDistance >= 1000 && lastDistanceMilestone === 500) {
     const message = `You traveled 1,000 feet!`;
     console.log(`NEW DISTANCE MILESTONE REACHED: 1000`);
+    playSound(distanceMilestoneSound); // Play distance milestone sound
     showMilestone('distance-milestone', message);
     lastDistanceMilestone = 1000;
   } else if (currentDistance >= 2000 && lastDistanceMilestone === 1000) {
     const message = `You traveled 2,000 feet!`;
     console.log(`NEW DISTANCE MILESTONE REACHED: 2000`);
+    playSound(distanceMilestoneSound); // Play distance milestone sound
     showMilestone('distance-milestone', message);
     lastDistanceMilestone = 2000;
   } else if (currentDistance >= 5000 && lastDistanceMilestone === 2000) {
     const message = `You traveled 5,000 feet!`;
     console.log(`NEW DISTANCE MILESTONE REACHED: 5000`);
+    playSound(distanceMilestoneSound); // Play distance milestone sound
     showMilestone('distance-milestone', message);
     lastDistanceMilestone = 5000;
   }
@@ -296,6 +305,7 @@ function checkWaterMilestones(currentWater) {
   if (milestone > lastWaterMilestone && milestone > 0) {
     const message = `You delivered ${milestone} deliveries!`;
     console.log(`NEW WATER MILESTONE REACHED: ${milestone}`);
+    playSound(waterMilestoneSound); // Play water milestone sound
     showMilestone('water-milestone', message);
     lastWaterMilestone = milestone;
   }

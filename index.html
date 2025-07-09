@@ -12,9 +12,13 @@
   <div id="game-container">
     <!-- HEADER (Scores + Branding) -->
     <div class="game-header">
-      <div class="score-box" id="distance-score">Distance (ft): 0</div>
+      <div class="score-box" id="distance-score">
+        Distance (ft): 0
+      </div>
       <img class="logo" src="img/charity_water_logo.png" alt="Charity Water logo"/>
-      <div class="score-box" id="water-score">Water Delivered: 0</div>
+      <div class="score-box" id="water-score">
+        Water Delivered: 0
+      </div>
     </div>
     <!-- START OVERLAY -->
     <div id="start-overlay">
@@ -32,6 +36,10 @@
     </div>
     <!-- MAIN GAME LAYER -->
     <div id="game-main">
+      <!-- Milestone messages positioned in the blue background area -->
+      <div class="milestone-message" id="distance-milestone"></div>
+      <div class="milestone-message" id="water-milestone"></div>
+      
       <div class="background-houses" id="background-houses"></div>
       <div class="ground-hitbox">
         <!-- Player and Dog are now inside the invisible ground-hitbox layer -->

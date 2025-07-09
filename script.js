@@ -85,6 +85,10 @@ let dogX = DOG_START_X;
 let dogChasing = false;
 let confettiTimer = null;
 
+// Milestone tracking variables
+let lastDistanceMilestone = 0; // Track the last distance milestone reached
+let lastWaterMilestone = 0; // Track the last water delivery milestone reached
+
 // ====== DOM ELEMENTS ======
 const startOverlay = document.getElementById('start-overlay');
 const startBtn = document.getElementById('start-btn');
@@ -126,6 +130,10 @@ function resetGameVars() {
   playerImg.style.left = px(PLAYER_X);
   dogImg.style.left = px(dogX);
   dogImg.style.bottom = px(playerY-2);
+  
+  // Reset milestone tracking
+  lastDistanceMilestone = 0;
+  lastWaterMilestone = 0;
 }
 
 function showStartOverlay() {
@@ -163,9 +171,144 @@ function showGameOver() {
   finalWater.textContent = `Water Delivered: ${waterDelivered}`;
 }
 
+// Function to test if milestone elements exist
+function testMilestoneElements() {
+  console.log('Testing milestone elements...');
+  
+  const distanceElement = document.getElementById('distance-milestone');
+  const waterElement = document.getElementById('water-milestone');
+  
+  console.log('Distance milestone element:', distanceElement);
+  console.log('Water milestone element:', waterElement);
+  
+  if (distanceElement && waterElement) {
+    console.log('Both milestone elements found successfully!');
+    return true;
+  } else {
+    console.log('ERROR: Some milestone elements not found!');
+    return false;
+  }
+}
+
+// Simple function to test milestones manually
+function testMilestone() {
+  console.log('Testing milestone system...');
+  
+  // Test distance milestone
+  const distanceElement = document.getElementById('distance-milestone');
+  if (distanceElement) {
+    console.log('Distance element found, testing...');
+    distanceElement.textContent = 'TEST: 5,000 feet!';
+    distanceElement.style.opacity = '1';
+    distanceElement.style.background = 'rgba(0, 0, 0, 0.9)';
+    distanceElement.style.color = '#FFD700';
+    distanceElement.style.padding = '8px 12px';
+    distanceElement.style.borderRadius = '8px';
+    distanceElement.style.position = 'absolute';
+    distanceElement.style.top = '100%';
+    distanceElement.style.left = '50%';
+    distanceElement.style.transform = 'translateX(-50%)';
+    distanceElement.style.zIndex = '1000';
+    distanceElement.style.marginTop = '8px';
+    distanceElement.style.fontSize = '14px';
+    distanceElement.style.fontWeight = '600';
+    distanceElement.style.whiteSpace = 'nowrap';
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+      distanceElement.style.opacity = '0';
+    }, 3000);
+  } else {
+    console.log('ERROR: Distance element not found!');
+    // Let's try to find it in a different way
+    const allElements = document.querySelectorAll('.milestone-message');
+    console.log('All milestone elements found:', allElements);
+  }
+}
+
+// Function to show milestone message - positioned in blue background area
+function showMilestone(elementId, message) {
+  const milestoneElement = document.getElementById(elementId);
+
+  if (!milestoneElement) {
+    console.log(`ERROR: Element ${elementId} not found!`);
+    return;
+  }
+
+  // Set message and make visible
+  milestoneElement.textContent = message;
+  milestoneElement.style.display = 'block';
+  milestoneElement.style.opacity = '1';
+  milestoneElement.style.transition = '';
+  milestoneElement.style.transform = 'translateY(0px)';
+
+  console.log(`Milestone displayed in blue area: ${message}`);
+
+  // Animate down and fade out after 2.5 seconds
+  setTimeout(() => {
+    milestoneElement.style.transition = 'all 1s ease-out';
+    milestoneElement.style.opacity = '0';
+    milestoneElement.style.transform = 'translateY(30px)';
+    setTimeout(() => {
+      milestoneElement.style.display = 'none';
+      milestoneElement.style.transition = '';
+      milestoneElement.style.transform = 'translateY(0px)';
+    }, 1000);
+  }, 2500);
+}
+
+// Function to check distance milestones - using smaller thresholds for testing
+function checkDistanceMilestones(currentDistance) {
+  // Use smaller thresholds for easier testing
+  if (currentDistance >= 100 && lastDistanceMilestone === 0) {
+    const message = `You traveled 100 feet!`;
+    console.log(`NEW DISTANCE MILESTONE REACHED: 100`);
+    showMilestone('distance-milestone', message);
+    lastDistanceMilestone = 100;
+  } else if (currentDistance >= 500 && lastDistanceMilestone === 100) {
+    const message = `You traveled 500 feet!`;
+    console.log(`NEW DISTANCE MILESTONE REACHED: 500`);
+    showMilestone('distance-milestone', message);
+    lastDistanceMilestone = 500;
+  } else if (currentDistance >= 1000 && lastDistanceMilestone === 500) {
+    const message = `You traveled 1,000 feet!`;
+    console.log(`NEW DISTANCE MILESTONE REACHED: 1000`);
+    showMilestone('distance-milestone', message);
+    lastDistanceMilestone = 1000;
+  } else if (currentDistance >= 2000 && lastDistanceMilestone === 1000) {
+    const message = `You traveled 2,000 feet!`;
+    console.log(`NEW DISTANCE MILESTONE REACHED: 2000`);
+    showMilestone('distance-milestone', message);
+    lastDistanceMilestone = 2000;
+  } else if (currentDistance >= 5000 && lastDistanceMilestone === 2000) {
+    const message = `You traveled 5,000 feet!`;
+    console.log(`NEW DISTANCE MILESTONE REACHED: 5000`);
+    showMilestone('distance-milestone', message);
+    lastDistanceMilestone = 5000;
+  }
+}
+
+// Function to check water delivery milestones - remove verbose logging
+function checkWaterMilestones(currentWater) {
+  const milestone = Math.floor(currentWater / 5) * 5;
+  
+  // Check if we reached a new milestone and it's greater than 0
+  if (milestone > lastWaterMilestone && milestone > 0) {
+    const message = `You delivered ${milestone} deliveries!`;
+    console.log(`NEW WATER MILESTONE REACHED: ${milestone}`);
+    showMilestone('water-milestone', message);
+    lastWaterMilestone = milestone;
+  }
+}
+
+// Update the existing updateScores function to include milestone checking
 function updateScores() {
   distanceScore.textContent = `Distance (ft): ${distance}`;
   waterScore.textContent = `Water Delivered: ${waterDelivered}`;
+  
+  // Check for milestones after updating scores
+  checkDistanceMilestones(distance);
+  checkWaterMilestones(waterDelivered);
 }
 
 // ====== GAME LOOP ======
@@ -413,4 +556,32 @@ document.addEventListener('dblclick', (e) => {
 });
 
 // ====== INIT ======
-showStartOverlay();
+// showStartOverlay(); // Comment out or remove this line
+
+// Move initialization to ensure DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM fully loaded, initializing game...');
+  
+  // Test milestone elements
+  setTimeout(() => {
+    testMilestoneElements();
+    
+    // Add test button
+    const testButton = document.createElement('button');
+    testButton.textContent = 'Test Milestone';
+    testButton.style.position = 'fixed';
+    testButton.style.top = '10px';
+    testButton.style.right = '10px';
+    testButton.style.zIndex = '9999';
+    testButton.style.padding = '10px';
+    testButton.style.backgroundColor = '#FFD700';
+    testButton.style.border = 'none';
+    testButton.style.borderRadius = '5px';
+    testButton.style.cursor = 'pointer';
+    testButton.onclick = testMilestone;
+    document.body.appendChild(testButton);
+    
+    // Initialize the game after DOM is ready
+    showStartOverlay();
+  }, 100);
+});

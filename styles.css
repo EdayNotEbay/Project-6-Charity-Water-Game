@@ -89,6 +89,8 @@ body {
   letter-spacing: 1px;
   user-select: none;
   pointer-events: none; /* Prevent clicking on score boxes */
+  position: relative; /* Added for milestone positioning */
+  overflow: visible; /* Make sure milestone messages are visible */
 }
 
 /* Start Overlay */
@@ -417,6 +419,66 @@ body {
   transition: background 0.15s;
   box-shadow: 0 2px 14px #0003;
   font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Make score boxes positioned relative and allow overflow for milestones */
+.score-box {
+  position: relative;
+  overflow: visible; /* Allow milestone messages to show outside the box */
+}
+
+/* Update milestone message styling for positioning in blue background area */
+.milestone-message {
+  position: absolute;
+  top: 20px; /* Position near the top of the blue area */
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFD700;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #FFD700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50; /* Above background but below UI elements */
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Position distance milestone on the left side */
+#distance-milestone {
+  left: 100px; /* Position below the distance score */
+}
+
+/* Position water milestone on the right side */
+#water-milestone {
+  right: 100px; /* Position below the water score */
+}
+
+/* Animation for milestone messages - fade down */
+.milestone-show {
+  animation: milestonePopDown 3s ease-out forwards;
+}
+
+@keyframes milestonePopDown {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0px) scale(1.1);
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(5px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(25px) scale(1);
+  }
 }
 
 /* Responsive for mobile */

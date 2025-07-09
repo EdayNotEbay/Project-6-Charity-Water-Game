@@ -31,6 +31,29 @@ const BLUE_HOUSE_DOOR_OFFSET = 90; // px from left of background image to blue h
 const RED_HOUSE_DOOR_OFFSET = 390; // px from left of background image to red house door
 const DOOR_BOTTOM = 179; // same as .door CSS
 
+// ====== AUDIO SETUP ======
+// Create audio objects for sound effects
+const dogBarkSound = new Audio('sounds/dog_bark.mp3');
+const jumpSound = new Audio('sounds/cartoony_jump_sound.mp3');
+const waterDeliverySound = new Audio('sounds/water_delivery_ding_sound.mp3');
+const gameOverSound = new Audio('sounds/game_over_sound.mp3');
+
+// Set volume levels (adjust as needed)
+dogBarkSound.volume = 0.5;
+jumpSound.volume = 0.4;
+waterDeliverySound.volume = 0.6;
+gameOverSound.volume = 0.7;
+
+// Helper function to play sounds safely
+function playSound(audio) {
+  try {
+    audio.currentTime = 0; // Reset to beginning
+    audio.play();
+  } catch (error) {
+    console.log('Could not play sound:', error);
+  }
+}
+
 // ====== GAME STATE ======
 let gameState = "start"; // start, running, gameover
 let distance = 0;
@@ -143,6 +166,9 @@ function startGame() {
   document.addEventListener('keydown', jumpHandler);
   // Listen for door click
   gameMain.addEventListener('mousedown', doorClickHandler);
+  
+  // Play dog bark sound when game starts
+  playSound(dogBarkSound);
 }
 
 function endGame() {
@@ -150,6 +176,10 @@ function endGame() {
   gameState = "gameover";
   document.removeEventListener('keydown', jumpHandler);
   gameMain.removeEventListener('mousedown', doorClickHandler);
+  
+  // Play game over sound
+  playSound(gameOverSound);
+  
   showGameOver();
 }
 
@@ -290,6 +320,9 @@ function jumpHandler(e) {
     
     playerJumping = true;
     jumpVel = JUMP_VELOCITY;
+    
+    // Play jump sound when player jumps
+    playSound(jumpSound);
   }
 }
 
@@ -303,6 +336,9 @@ function doorClickHandler(e) {
     // Don't remove glow immediately - keep it for 5 seconds
     waterDelivered += 1;
     updateScores();
+    
+    // Play water delivery sound when water is delivered
+    playSound(waterDeliverySound);
     
     // Set a timer to remove glow after 5 seconds
     setTimeout(() => {
@@ -324,7 +360,8 @@ function doorClickHandler(e) {
 function triggerDogChase() {
   if (!dogChasing) {
     dogChasing = true;
-    // Optionally play animation/sound here
+    // Play game over sound when player hits obstacle
+    playSound(gameOverSound);
   }
 }
 

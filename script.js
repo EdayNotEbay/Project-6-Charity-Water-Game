@@ -173,7 +173,7 @@ function gameTick() {
     return true;
   });
 
-  // Player gravity
+  // Player gravity - back to simple version
   if (playerJumping) {
     jumpVel -= GRAVITY;
     playerY += jumpVel;
@@ -282,12 +282,12 @@ function spawnObstacle() {
 
 // ====== JUMP LOGIC ======
 function jumpHandler(e) {
-  // Only allow jumping if spacebar is pressed, player is not already jumping, 
-  // game is running, AND player is on the ground
+  // Simple but effective jump prevention - only check essential conditions
   if ((e.code === "Space" || e.key === " " || e.keyCode === 32) && 
       !playerJumping && 
       gameState === "running" && 
-      playerY === PLAYER_Y) { // This ensures player is on ground level
+      playerY === PLAYER_Y) { // Player must be exactly on ground
+    
     playerJumping = true;
     jumpVel = JUMP_VELOCITY;
   }

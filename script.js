@@ -282,7 +282,12 @@ function spawnObstacle() {
 
 // ====== JUMP LOGIC ======
 function jumpHandler(e) {
-  if ((e.code === "Space" || e.key === " " || e.keyCode === 32) && !playerJumping && gameState === "running") {
+  // Only allow jumping if spacebar is pressed, player is not already jumping, 
+  // game is running, AND player is on the ground
+  if ((e.code === "Space" || e.key === " " || e.keyCode === 32) && 
+      !playerJumping && 
+      gameState === "running" && 
+      playerY === PLAYER_Y) { // This ensures player is on ground level
     playerJumping = true;
     jumpVel = JUMP_VELOCITY;
   }

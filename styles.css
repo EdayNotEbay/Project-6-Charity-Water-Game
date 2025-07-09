@@ -295,11 +295,10 @@ body {
   border-radius: 18px;
   box-shadow: 0 6px 24px #0003;
   border: 4px solid #FFC907;
-  display: none;
+  display: none; /* Keep this as the final display value */
   animation: confettiFade 1.6s linear forwards;
   pointer-events: none;
-  /* Add flexbox to arrange jerry can, text, and confetti */
-  display: flex;
+  /* Add flexbox properties but don't override display */
   align-items: center;
   gap: 8px;
   font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;

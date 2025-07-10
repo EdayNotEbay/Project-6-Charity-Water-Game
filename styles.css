@@ -558,6 +558,32 @@ body {
   outline: none;
 }
 
+#easy-btn {
+  color: blue;
+}
+#easy-btn.selected,
+#easy-btn:focus {
+  color: blue;
+}
+
+#normal-btn {
+  color: #CBCCD1;
+}
+#normal-btn.selected,
+#normal-btn:focus {
+  color: #CBCCD1;
+}
+
+/* Only change the font color for the Hard button */
+#hard-btn {
+  color: #dc143c; /* dark blood red text */
+  /* keep all other styling the same as .difficulty-btn */
+}
+#hard-btn.selected,
+#hard-btn:focus {
+  color: #dc143c; /* dark blood red text */
+}
+
 .heart-img {
   opacity: 1;
   transition: opacity 0.5s;

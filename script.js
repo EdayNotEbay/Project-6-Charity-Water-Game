@@ -17,7 +17,16 @@ const OBSTACLE_MIN_DIST = 150;
 const OBSTACLE_MAX_DIST = 250;
 const TICK_INTERVAL = 18;
 const JUMP_VELOCITY = 22;
-const GRAVITY = 1.09;
+
+// Gravity values for each mode (smaller gravity = longer jump)
+const DIFFICULTY_GRAVITY = {
+  easy: 0.7,    // Stay in air longer on easy
+  normal: 1.09, // Original gravity
+  hard: 1.25    // Fall a bit faster on hard
+};
+
+let GRAVITY = DIFFICULTY_GRAVITY.normal; // Default gravity
+
 const PLAYER_WIDTH = 50;
 const PLAYER_HEIGHT = 120;
 const DOG_WIDTH = 100;
@@ -612,6 +621,7 @@ easyBtn.addEventListener('click', () => {
   easyBtn.classList.add('selected');
   selectedDifficulty = 'easy';
   BACKGROUND_SPEED = DIFFICULTY_SPEEDS.easy;
+  GRAVITY = DIFFICULTY_GRAVITY.easy; // Less gravity for longer jumps
   startBtn.disabled = false;
 });
 
@@ -620,6 +630,7 @@ normalBtn.addEventListener('click', () => {
   normalBtn.classList.add('selected');
   selectedDifficulty = 'normal';
   BACKGROUND_SPEED = DIFFICULTY_SPEEDS.normal;
+  GRAVITY = DIFFICULTY_GRAVITY.normal; // Normal gravity
   startBtn.disabled = false;
 });
 
@@ -628,6 +639,7 @@ hardBtn.addEventListener('click', () => {
   hardBtn.classList.add('selected');
   selectedDifficulty = 'hard';
   BACKGROUND_SPEED = DIFFICULTY_SPEEDS.hard;
+  GRAVITY = DIFFICULTY_GRAVITY.hard; // More gravity for faster fall
   startBtn.disabled = false;
 });
 

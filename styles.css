@@ -557,3 +557,16 @@ body {
   color: #FFC907;
   outline: none;
 }
+
+.heart-img {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+.heart-img.faded {
+  opacity: 0;
+}
+/* Flash effect for player when hit */
+.player.flash {
+  filter: brightness(3) grayscale(1);
+  transition: filter 0.1s;
+}

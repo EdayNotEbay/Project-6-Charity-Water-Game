@@ -12,9 +12,13 @@
   <div id="game-container">
     <!-- HEADER (Scores + Branding) -->
     <div class="game-header">
-
       <div class="score-box" id="distance-score">
         Distance (ft): 0
+      </div>
+      <!-- Hearts for lives (moved to the right of distance score) -->
+      <div id="hearts" style="display: flex; align-items: center; gap: 6px; margin-left: 12px;">
+        <img src="img/heart.png" id="heart1" class="heart-img" alt="Heart 1" style="width:32px; height:32px; transition: opacity 0.5s;"/>
+        <img src="img/heart.png" id="heart2" class="heart-img" alt="Heart 2" style="width:32px; height:32px; transition: opacity 0.5s;"/>
       </div>
       <img class="logo" src="img/charity_water_logo.png" alt="Charity Water logo"/>
       <div class="score-box" id="water-score">
@@ -82,4 +86,5 @@
   
   <script src="script.js"></script>
 </body>
+</html>
 </html>

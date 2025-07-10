@@ -112,8 +112,8 @@ let distance = 0;
 let waterDelivered = 0;
 let backgroundPos = 0;
 let objects = [];
-let nextDoorX = GAME_WIDTH + 400; // Start spawning much further away
-let nextObstacleX = GAME_WIDTH + 500; // Start spawning much further away
+let nextDoorX = GAME_WIDTH + 400;
+let nextObstacleX = GAME_WIDTH + 500;
 let doorCanBeClicked = false;
 let activeDoor = null;
 let runningInterval = null;
@@ -123,6 +123,8 @@ let jumpVel = 0;
 let dogX = DOG_START_X;
 let dogChasing = false;
 let confettiTimer = null;
+// Add lives variable (2 hearts = 2 lives)
+let lives = 2;
 
 // Milestone tracking variables
 let lastDistanceMilestone = 0;
@@ -157,6 +159,9 @@ const gameOverOverlay = document.getElementById('game-over-overlay');
 const finalDistance = document.getElementById('final-distance');
 const finalWater = document.getElementById('final-water');
 const resetBtn = document.getElementById('reset-btn');
+// Add references to heart images
+const heart1 = document.getElementById('heart1');
+const heart2 = document.getElementById('heart2');
 
 // ====== UTILITY ======
 function px(val) { return val + 'px'; }
@@ -169,8 +174,8 @@ function resetGameVars() {
   backgroundPos = 0;
   objects.forEach(o => o.el.remove());
   objects = [];
-  nextDoorX = GAME_WIDTH + 400; // Start spawning much further away
-  nextObstacleX = GAME_WIDTH + 500; // Start spawning much further away
+  nextDoorX = GAME_WIDTH + 400;
+  nextObstacleX = GAME_WIDTH + 500;
   doorCanBeClicked = false;
   activeDoor = null;
   playerJumping = false;
@@ -183,10 +188,20 @@ function resetGameVars() {
   playerImg.style.left = px(PLAYER_X);
   dogImg.style.left = px(dogX);
   dogImg.style.bottom = px(playerY - 2);
-  
+
   // Reset milestone tracking
   lastDistanceMilestone = 0;
   lastWaterMilestone = 0;
+
+  // Reset lives and hearts
+  lives = 2;
+  if (heart1) heart1.classList.remove('faded');
+  if (heart2) heart2.classList.remove('faded');
+  // Reset player position and remove any flashing effect
+  if (playerImg) {
+    playerImg.classList.remove('flash');
+    playerImg.style.left = px(PLAYER_X);
+  }
 }
 
 function showStartOverlay() {
@@ -211,12 +226,13 @@ function hideStartOverlay() {
 }
 
 function showGameMain() {
+  // Always reset player position to normal at game start
   playerImg.style.left = px(PLAYER_X);
-  playerImg.style.bottom = px(PLAYER_Y); // Back to original PLAYER_Y (18px)
+  playerImg.style.bottom = px(PLAYER_Y);
   playerImg.style.display = 'block';
   dogImg.style.display = 'block';
   dogImg.style.left = px(dogX);
-  dogImg.style.bottom = px(PLAYER_Y - 2); // Back to original PLAYER_Y
+  dogImg.style.bottom = px(PLAYER_Y - 2);
 }
 
 function showGameOver() {
@@ -529,8 +545,11 @@ function gameTick() {
       // console.log(`Snake hitbox: ${snakeLeft} to ${snakeRight}`);
 
       if (overlapX && playerAtGroundLevel) {
-        console.log('Snake collision detected!');
-        triggerDogChase();
+        // Only trigger damage if not already flashing (prevents double hit in one frame)
+        if (!playerImg.classList.contains('flash')) {
+          console.log('Snake collision detected!');
+          triggerDogChase();
+        }
       }
     }
   }
@@ -588,11 +607,47 @@ function doorClickHandler(e) {
   }
 }
 
+// Helper to move player closer to the dog based on lives left
+function movePlayerForLives() {
+  // On first hit, move player 70px closer to the dog
+  // On second hit, move player 120px closer (total from start)
+  let offset = 0;
+  if (lives === 1) {
+    offset = 70;
+  } else if (lives === 0) {
+    offset = 120;
+  }
+  playerImg.style.left = px(PLAYER_X - offset);
+}
+
+// Add a CSS class for flashing effect (white flash)
+function addPlayerFlash() {
+  if (playerImg) {
+    playerImg.classList.add('flash');
+    setTimeout(() => {
+      playerImg.classList.remove('flash');
+    }, 350); // Flash for 0.35 seconds
+  }
+}
+
 function triggerDogChase() {
-  if (!dogChasing) {
-    dogChasing = true;
+  // Only lose a life if not already at 0
+  if (lives === 2) {
+    // First hit: lose one life, fade out heart2, move player, flash
+    lives = 1;
+    if (heart2) heart2.classList.add('faded');
+    movePlayerForLives();
+    addPlayerFlash();
+    dogChasing = false; // Don't start the chase yet
     playSound(gameOverSound);
-    console.log('Dog chase triggered! Player hit snake.');
+  } else if (lives === 1) {
+    // Second hit: lose last life, fade out heart1, move player, flash, start chase
+    lives = 0;
+    if (heart1) heart1.classList.add('faded');
+    movePlayerForLives();
+    addPlayerFlash();
+    dogChasing = true; // Start the chase so the dog catches the player
+    playSound(gameOverSound);
   }
 }
 

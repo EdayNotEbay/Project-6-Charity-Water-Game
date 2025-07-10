@@ -120,9 +120,24 @@ let confettiTimer = null;
 let lastDistanceMilestone = 0;
 let lastWaterMilestone = 0;
 
+// ====== DIFFICULTY SETTINGS ======
+let selectedDifficulty = null;
+
+// Default speeds for each mode
+const DIFFICULTY_SPEEDS = {
+  easy: 4.2,    // Slower background scroll for easy
+  normal: 5.8,  // Current normal speed
+  hard: 7.0     // Slightly faster for hard
+};
+
+let BACKGROUND_SPEED = DIFFICULTY_SPEEDS.normal; // Default to normal
+
 // ====== DOM ELEMENTS ======
 const startOverlay = document.getElementById('start-overlay');
 const startBtn = document.getElementById('start-btn');
+const easyBtn = document.getElementById('easy-btn');
+const normalBtn = document.getElementById('normal-btn');
+const hardBtn = document.getElementById('hard-btn');
 const gameMain = document.getElementById('game-main');
 const backgroundHouses = document.getElementById('background-houses');
 const playerImg = document.getElementById('player');
@@ -174,6 +189,9 @@ function showStartOverlay() {
   dogImg.style.display = 'none';
   objects.forEach(o => o.el.remove());
   objects = [];
+  clearDifficultySelection();
+  selectedDifficulty = null;
+  startBtn.disabled = true;
 }
 
 function hideStartOverlay() {
@@ -388,6 +406,11 @@ function spawnObstacle() {
 
 // ====== GAME LOOP ======
 function startGame() {
+  // Only start if a difficulty is selected
+  if (!selectedDifficulty) {
+    alert('Please select a difficulty first!');
+    return;
+  }
   resetGameVars();
   showGameMain();
   updateScores();
@@ -395,7 +418,7 @@ function startGame() {
   runningInterval = setInterval(gameTick, TICK_INTERVAL);
   document.addEventListener('keydown', jumpHandler);
   gameMain.addEventListener('mousedown', doorClickHandler);
-  
+
   playSound(dogBarkSound);
   playSound(backgroundMusic);
 }
@@ -576,6 +599,39 @@ function triggerDogChase() {
   }
 }
 
+// ====== DIFFICULTY BUTTON LOGIC ======
+// Helper to clear selection
+function clearDifficultySelection() {
+  easyBtn.classList.remove('selected');
+  normalBtn.classList.remove('selected');
+  hardBtn.classList.remove('selected');
+}
+
+// When a difficulty button is clicked, set the speed and enable start
+easyBtn.addEventListener('click', () => {
+  clearDifficultySelection();
+  easyBtn.classList.add('selected');
+  selectedDifficulty = 'easy';
+  BACKGROUND_SPEED = DIFFICULTY_SPEEDS.easy;
+  startBtn.disabled = false;
+});
+
+normalBtn.addEventListener('click', () => {
+  clearDifficultySelection();
+  normalBtn.classList.add('selected');
+  selectedDifficulty = 'normal';
+  BACKGROUND_SPEED = DIFFICULTY_SPEEDS.normal;
+  startBtn.disabled = false;
+});
+
+hardBtn.addEventListener('click', () => {
+  clearDifficultySelection();
+  hardBtn.classList.add('selected');
+  selectedDifficulty = 'hard';
+  BACKGROUND_SPEED = DIFFICULTY_SPEEDS.hard;
+  startBtn.disabled = false;
+});
+
 // ====== EVENT LISTENERS ======
 startBtn.addEventListener('click', () => {
   hideStartOverlay();
@@ -586,6 +642,9 @@ resetBtn.addEventListener('click', () => {
   stopSound(backgroundMusic);
   gameOverOverlay.classList.remove('show');
   showStartOverlay();
+  clearDifficultySelection();
+  selectedDifficulty = null;
+  startBtn.disabled = true;
 });
 
 // Prevent text selection

@@ -527,3 +527,33 @@ body {
     padding: 0 20px;
   }
 }
+
+/* Difficulty buttons styling */
+.difficulty-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.difficulty-btn {
+  background: #111;
+  color: #f75e5e;
+  font-size: 2em;
+  font-weight: 300;
+  padding: 18px 56px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px #0007;
+  transition: background 0.2s, color 0.2s;
+  font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.difficulty-btn.selected,
+.difficulty-btn:focus {
+  background: #222;
+  color: #FFC907;
+  outline: none;
+}

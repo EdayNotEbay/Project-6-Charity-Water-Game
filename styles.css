@@ -184,7 +184,7 @@ body {
   width: 100%;
   height: calc(100% - 45px); /* Fill down to the yellow ground */
   z-index: 1;
-  background: url('img/2d_Houses_edit.png');
+  background: url('img/african_village_background.png');
   background-size: auto 100%;
   background-repeat: repeat-x;
   background-position-x: 0;
@@ -251,7 +251,7 @@ body {
 /* Game objects (player, dog, obstacles, doors) */
 .player {
   position: absolute;
-  bottom: 0; /* Stand on top of the yellow ground */
+  bottom: -30px; /* Moved 30px lower from 0px */
   left: 170px;
   width: 70px;
   height: 120px;
@@ -266,7 +266,7 @@ body {
 }
 .dog {
   position: absolute;
-  bottom: 0; /* Stand on top of the yellow ground */
+  bottom: -30px; /* Moved 30px lower from 0px */
   left: 10px; /* Moved right from -40px to show the whole dog */
   width: 110px;
   height: 70px;
@@ -280,34 +280,48 @@ body {
   pointer-events: none; /* Prevents mouse events like click/drag highlight */
 }
 
-/* Door (clickable) */
-.door {
+/* Update person styling (replacing door) */
+.person {
   position: absolute;
-  /* Place the door on the grass */
-  bottom: 176px; /* Move door down to touch the grass */
-  width: 56px;
-  height: 100px;
-  background: url('img/pixel_door.png');
-  background-size: 100% 100%; /* Stretch image to fill the door box */
+  bottom: 144px; /* Moved 96px higher from 48px (48 + 96 = 144) */
+  width: 60px; /* Reduced from 80px */
+  height: 90px; /* Reduced from 120px */
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position: top center; /* Align image to the top */
+  background-position: center bottom;
   z-index: 15;
   transition: box-shadow 0.15s;
   cursor: pointer;
   box-sizing: border-box;
-  /* Keep pointer-events: auto (default) to allow door clicking */
 }
 
-.door.glow {
-  /* Use the updated hex color for the glow */
+/* Keep the glow effect for people */
+.person.glow {
   box-shadow: 0 0 22px 8px #FFC907, 0 0 0 3px #FFC907;
 }
 
-/* Obstacles (hydrant) - Clean version with correct image */
+/* Base door styling - sizes will be set dynamically via JavaScript */
+.door {
+  position: absolute;
+  bottom: 144px;
+  /* Width and height will be set dynamically by JavaScript */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  z-index: 15;
+  transition: box-shadow 0.15s;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.door.glow {
+  box-shadow: 0 0 22px 8px #FFC907, 0 0 0 3px #FFC907;
+}
+
+/* Obstacles (hydrant) - Update to match new ground level */
 .hydrant {
   position: absolute;
-  /* Place the hydrant on the grass */
-  bottom: 152px; /* Moved down from 179px to touch the yellow ground */
+  bottom: 114px; /* Updated to match the new ground level where people are positioned */
   width: 42px;
   height: 95px;
   background: url('img/fire_hydrant_2.png');
@@ -315,9 +329,8 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   z-index: 13;
-  /* Removed box-shadow to eliminate the box around the image */
-  user-select: none; /* Prevents text/image selection on player */
-  pointer-events: none; /* Prevents mouse events like click/drag highlight */
+  user-select: none;
+  pointer-events: none;
 }
 
 .confetti {
@@ -496,8 +509,10 @@ body {
   .houses-img { width: 220px;}
   .player-img { width: 43px; height: 66px;}
   .doghouse-img { width: 82px; height: 82px;}
-  .door { width: 37px; height: 60px;}
-  .hydrant { width: 12px; height: 22px; } /* Reverted to original mobile sizes */
+  .door { 
+    /* Mobile sizes will be handled by JavaScript based on category */
+  }
+  .hydrant { width: 12px; height: 22px; }
   .footer {
     font-size: 0.8em;
     gap: 8px;

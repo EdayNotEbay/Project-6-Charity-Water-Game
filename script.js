@@ -508,18 +508,26 @@ function gameTick() {
       }
     }
     
-    // Snake collision with tight hitbox
+    // Snake collision with centered hitbox
     if (obj.type === "hydrant") {
-      const snakeLeft = obj.x;
-      const snakeRight = snakeLeft + HYDRANT_WIDTH; // Small hitbox (38px)
-      
+      // Center the hitbox horizontally within the snake image
+      // The snake image is 180px wide, hitbox is 38px wide
+      // So left edge = obj.x + (180 - 38) / 2
+      const snakeImageWidth = 180; // matches CSS .hydrant width
+      const hitboxOffset = (snakeImageWidth - HYDRANT_WIDTH) / 2;
+      const snakeLeft = obj.x + hitboxOffset;
+      const snakeRight = snakeLeft + HYDRANT_WIDTH;
+
       const playerLeft = PLAYER_X;
       const playerRight = playerLeft + PLAYER_WIDTH;
-      
+
       // Tight collision detection
       const overlapX = playerRight > snakeLeft && playerLeft < snakeRight;
       const playerAtGroundLevel = playerY < PLAYER_Y + 40;
-      
+
+      // Debug: Uncomment to visualize hitbox in console
+      // console.log(`Snake hitbox: ${snakeLeft} to ${snakeRight}`);
+
       if (overlapX && playerAtGroundLevel) {
         console.log('Snake collision detected!');
         triggerDogChase();

@@ -1,36 +1,36 @@
 // ====== GAME CONSTANTS ======
 const GAME_WIDTH = 900;
 const GAME_HEIGHT = 520;
-const PLAYER_Y = 18; // Keep original value for CSS positioning logic
-const GROUND_LEVEL = 144; // New constant for collision detection with people/hydrants
+const PLAYER_Y = 18; // Back to original positioning to match CSS
+const GROUND_LEVEL = 144; // Ground level for people
 const DOG_START_X = 10;
 const PLAYER_X = 170;
 const GROUND_HEIGHT = 45;
 const BACKGROUND_SPEED = 5.8;
 const DOG_CHASE_SPEED = 4.8;
 
-// Updated door spawning for 2 people per background rotation
-const BG_IMAGE_WIDTH = 800; // Width of background image
-const DOOR_SPAWN_DIST = BG_IMAGE_WIDTH / 2; // 400px - spawn 2 people per background rotation
-const DOORS_PER_ROTATION = 2; // Number of people per background image cycle
+// Updated spawning for exactly 1 person per background rotation - using actual background image width
+const BG_IMAGE_WIDTH = 1441.58; // Actual width of background image (was 800)
+const DOOR_SPAWN_DIST = BG_IMAGE_WIDTH; // 1441.58px - spawn exactly 1 person per background rotation
+const DOORS_PER_ROTATION = 1; // Exactly 1 person per background image cycle
 
-const OBSTACLE_MIN_DIST = 180;
-const OBSTACLE_MAX_DIST = 300;
+const OBSTACLE_MIN_DIST = 150;
+const OBSTACLE_MAX_DIST = 250;
 const TICK_INTERVAL = 18;
 const JUMP_VELOCITY = 22;
 const GRAVITY = 1.09;
 const PLAYER_WIDTH = 50;
 const PLAYER_HEIGHT = 120;
 const DOG_WIDTH = 100;
-const DOOR_WIDTH = 60; // Reduced from 80 for better proportions
-const DOOR_HEIGHT = 90; // Reduced from 120 for better proportions
-const HYDRANT_WIDTH = 42;
-const HYDRANT_HEIGHT = 95;
+const DOOR_WIDTH = 60;
+const DOOR_HEIGHT = 90;
+const HYDRANT_WIDTH = 38; // Tight hitbox for snake
+const HYDRANT_HEIGHT = 20;
 
-// Updated spacing constants for better gameplay
-const MIN_HYDRANT_TO_DOOR_DISTANCE = 100;
-const MIN_HYDRANT_TO_HYDRANT_DISTANCE = 150;
-const HYDRANT_SPAWN_CHANCE = 0.8;
+// Much larger distances to prevent "phasing in" and overlapping
+const MIN_HYDRANT_TO_DOOR_DISTANCE = 340; // Distance between snakes and people
+const MIN_HYDRANT_TO_HYDRANT_DISTANCE = 450; // Increased from 340px to 450px for snakes
+const HYDRANT_SPAWN_CHANCE = 0.3; // Reduced spawn rate for better spacing
 
 // Array of people images organized by size category
 const PEOPLE_IMAGES = {
@@ -104,8 +104,8 @@ let distance = 0;
 let waterDelivered = 0;
 let backgroundPos = 0;
 let objects = [];
-let nextDoorX = GAME_WIDTH + 200;
-let nextObstacleX = GAME_WIDTH + 300;
+let nextDoorX = GAME_WIDTH + 400; // Start spawning much further away
+let nextObstacleX = GAME_WIDTH + 500; // Start spawning much further away
 let doorCanBeClicked = false;
 let activeDoor = null;
 let runningInterval = null;
@@ -146,8 +146,8 @@ function resetGameVars() {
   backgroundPos = 0;
   objects.forEach(o => o.el.remove());
   objects = [];
-  nextDoorX = GAME_WIDTH + 200;
-  nextObstacleX = GAME_WIDTH + 320;
+  nextDoorX = GAME_WIDTH + 400; // Start spawning much further away
+  nextObstacleX = GAME_WIDTH + 500; // Start spawning much further away
   doorCanBeClicked = false;
   activeDoor = null;
   playerJumping = false;
@@ -186,11 +186,11 @@ function hideStartOverlay() {
 
 function showGameMain() {
   playerImg.style.left = px(PLAYER_X);
-  playerImg.style.bottom = px(PLAYER_Y);
+  playerImg.style.bottom = px(PLAYER_Y); // Back to original PLAYER_Y (18px)
   playerImg.style.display = 'block';
   dogImg.style.display = 'block';
   dogImg.style.left = px(dogX);
-  dogImg.style.bottom = px(PLAYER_Y - 2);
+  dogImg.style.bottom = px(PLAYER_Y - 2); // Back to original PLAYER_Y
 }
 
 function showGameOver() {
@@ -284,18 +284,28 @@ function updateScores() {
 // Helper function to check if position is too close to existing objects
 function isPositionTooClose(newX, minDistance, objectType = null) {
   for (const obj of objects) {
-    const distance = Math.abs(obj.x - newX);
+    const objDistance = Math.abs(obj.x - newX);
     
+    // For snakes spawning near doors (people)
     if (objectType === 'hydrant' && obj.type === 'door') {
-      if (distance < MIN_HYDRANT_TO_DOOR_DISTANCE) {
+      if (objDistance < MIN_HYDRANT_TO_DOOR_DISTANCE) {
+        console.log(`Snake spawn blocked: too close to person at ${obj.x}px (distance: ${objDistance}px, min required: ${MIN_HYDRANT_TO_DOOR_DISTANCE}px)`);
         return true;
       }
-    } else if (objectType === 'hydrant' && obj.type === 'hydrant') {
-      if (distance < MIN_HYDRANT_TO_HYDRANT_DISTANCE) {
+    } 
+    // For snakes spawning near other snakes
+    else if (objectType === 'hydrant' && obj.type === 'hydrant') {
+      if (objDistance < MIN_HYDRANT_TO_HYDRANT_DISTANCE) {
+        console.log(`Snake spawn blocked: too close to other snake at ${obj.x}px (distance: ${objDistance}px, min required: ${MIN_HYDRANT_TO_HYDRANT_DISTANCE}px)`);
         return true;
       }
-    } else if (distance < minDistance) {
-      return true;
+    } 
+    // For doors spawning near existing objects
+    else if (objectType === 'door' || objectType === null) {
+      if (objDistance < minDistance) {
+        console.log(`Person spawn blocked: too close to object at ${obj.x}px (distance: ${objDistance}px, min required: ${minDistance}px)`);
+        return true;
+      }
     }
   }
   return false;
@@ -303,7 +313,7 @@ function isPositionTooClose(newX, minDistance, objectType = null) {
 
 // ====== SPAWNERS ======
 function spawnDoor() {
-  // Create a person element instead of a door
+  // Create a person element
   const el = document.createElement('div');
   el.className = 'door';
   
@@ -324,13 +334,16 @@ function spawnDoor() {
   // Store category for collision detection
   el.dataset.category = randomCategory;
   
-  el.style.left = px(GAME_WIDTH + 35);
+  // People spawn at fixed distance (300px) to maintain 1441.58px spacing between people
+  // No collision avoidance for people - they follow the background rotation schedule
+  const spawnX = GAME_WIDTH + 300;
+  el.style.left = px(spawnX);
   gameMain.appendChild(el);
   
   // Store person info with size data for collision detection
   objects.push({ 
     type: 'door', 
-    x: GAME_WIDTH + 35, 
+    x: spawnX, 
     el, 
     delivered: false,
     category: randomCategory,
@@ -338,32 +351,39 @@ function spawnDoor() {
     height: size.height
   });
   
-  console.log(`${randomCategory} spawned with image: ${randomPersonImage}, size: ${size.width}x${size.height}`);
+  console.log(`${randomCategory} spawned at fixed position ${spawnX}px (maintains 1441.58px spacing)`);
 }
 
 function spawnObstacle() {
+  // Lower spawn chance for better spacing
   if (Math.random() > HYDRANT_SPAWN_CHANCE) {
+    console.log('Snake spawn skipped due to chance');
     return;
   }
   
   let attempts = 0;
   let hydrantX;
-  const maxAttempts = 8;
+  const maxAttempts = 20; // More attempts for better positioning
   
   while (attempts < maxAttempts) {
-    hydrantX = GAME_WIDTH + rand(60, 180);
+    // Spawn much further away to prevent "phasing in"
+    hydrantX = GAME_WIDTH + rand(400, 600); // Further spawn range for snakes
     
+    // Check if this position is too close to doors or other snakes
     if (!isPositionTooClose(hydrantX, MIN_HYDRANT_TO_DOOR_DISTANCE, 'hydrant')) {
       const el = document.createElement('div');
       el.className = 'hydrant';
       el.style.left = px(hydrantX);
       gameMain.appendChild(el);
       objects.push({ type: 'hydrant', x: hydrantX, el });
+      console.log(`Snake spawned at position ${hydrantX}px`);
       return;
     }
     
     attempts++;
   }
+  
+  console.log('Snake spawn skipped - no good position found after', maxAttempts, 'attempts');
 }
 
 // ====== GAME LOOP ======
@@ -399,22 +419,23 @@ function gameTick() {
   backgroundPos -= BACKGROUND_SPEED;
   backgroundHouses.style.backgroundPositionX = px(backgroundPos);
 
-  // Move objects
-  objects.forEach(obj => {
+  // Move objects with better performance
+  for (let i = 0; i < objects.length; i++) {
+    const obj = objects[i];
     obj.x -= BACKGROUND_SPEED;
     obj.el.style.left = px(obj.x);
-  });
+  }
 
-  // Remove offscreen objects
+  // Remove offscreen objects more efficiently
   objects = objects.filter(obj => {
-    if (obj.x < -120) { 
+    if (obj.x < -300) { // Remove when further off screen
       obj.el.remove(); 
       return false; 
     }
     return true;
   });
 
-  // Player gravity
+  // Player gravity (unchanged)
   if (playerJumping) {
     jumpVel -= GRAVITY;
     playerY += jumpVel;
@@ -436,10 +457,10 @@ function gameTick() {
     dogImg.style.left = px(dogX);
   }
 
-  // Spawn objects
+  // Spawn objects with consistent spacing - exactly 1 person per background rotation
   if (backgroundPos < -nextDoorX) {
     spawnDoor();
-    nextDoorX += DOOR_SPAWN_DIST + rand(-40, 40);
+    nextDoorX += DOOR_SPAWN_DIST; // Fixed distance - no random variation for consistent 1 per rotation
   }
   
   if (backgroundPos < -nextObstacleX) {
@@ -447,21 +468,25 @@ function gameTick() {
     nextObstacleX += rand(OBSTACLE_MIN_DIST, OBSTACLE_MAX_DIST);
   }
 
-  // Handle collisions
+  // Handle collisions (simplified for performance)
   let glowing = false;
   activeDoor = null;
   
-  for (const obj of objects) {
+  for (let i = 0; i < objects.length; i++) {
+    const obj = objects[i];
+    
     if (obj.type === "door" && !obj.delivered) {
+      // Person collision detection
       const pxLeft = PLAYER_X;
       const pxRight = pxLeft + PLAYER_WIDTH;
       const doorLeft = obj.x;
-      
-      // Use dynamic width based on person category
-      const doorWidth = obj.width || DOOR_WIDTH; // Fallback to default
+      const doorWidth = obj.width;
       const doorRight = doorLeft + doorWidth;
       
-      if (pxRight > doorLeft + 7 && pxLeft < doorRight - 10) {
+      const leftMargin = Math.max(3, Math.floor(doorWidth * 0.1));
+      const rightMargin = Math.max(5, Math.floor(doorWidth * 0.15));
+      
+      if (pxRight > doorLeft + leftMargin && pxLeft < doorRight - rightMargin) {
         glowing = true;
         obj.el.classList.add("glow");
         activeDoor = obj;
@@ -471,38 +496,37 @@ function gameTick() {
       }
     }
     
-    // Hydrant collision - use GROUND_LEVEL for proper collision detection
+    // Snake collision with tight hitbox
     if (obj.type === "hydrant") {
-      const hydrantLeft = obj.x;
-      const hydrantRight = hydrantLeft + HYDRANT_WIDTH;
-      const hydrantTop = GROUND_LEVEL; // Use ground level instead of PLAYER_Y
-      const hydrantBottom = hydrantTop + HYDRANT_HEIGHT;
+      const snakeLeft = obj.x;
+      const snakeRight = snakeLeft + HYDRANT_WIDTH; // Small hitbox (38px)
+      
       const playerLeft = PLAYER_X;
       const playerRight = playerLeft + PLAYER_WIDTH;
-      const playerBottom = GROUND_LEVEL; // Use ground level for player too
-      const playerTop = playerBottom + PLAYER_HEIGHT;
-
-      const overlapX = playerRight > hydrantLeft && playerLeft < hydrantRight;
-      const overlapY = playerBottom < hydrantBottom && playerTop > hydrantTop;
-
-      if (overlapX && overlapY) {
+      
+      // Tight collision detection
+      const overlapX = playerRight > snakeLeft && playerLeft < snakeRight;
+      const playerAtGroundLevel = playerY < PLAYER_Y + 40;
+      
+      if (overlapX && playerAtGroundLevel) {
+        console.log('Snake collision detected!');
         triggerDogChase();
       }
     }
   }
   
+  // Clear glow states efficiently
   if (!glowing) {
     doorCanBeClicked = false;
-    objects.forEach(obj => { 
-      if (obj.type === 'door' && !obj.delivered) {
-        obj.el.classList.remove("glow"); 
-      }
-    });
     activeDoor = null;
   }
 
   // Dog catches player
-  if (dogChasing && dogX + DOG_WIDTH - 30 >= PLAYER_X) {
+  const dogRight = dogX + DOG_WIDTH;
+  const playerLeft = PLAYER_X;
+  
+  if (dogChasing && dogRight - 30 >= playerLeft) {
+    console.log('Dog caught player!');
     endGame();
   }
 }
@@ -548,6 +572,7 @@ function triggerDogChase() {
   if (!dogChasing) {
     dogChasing = true;
     playSound(gameOverSound);
+    console.log('Dog chase triggered! Player hit snake.');
   }
 }
 

@@ -251,23 +251,25 @@ body {
 /* Game objects (player, dog, obstacles, doors) */
 .player {
   position: absolute;
-  bottom: -30px; /* Moved 30px lower from 0px */
+  bottom: 18px; /* Fixed to match PLAYER_Y constant (was 48px) */
   left: 170px;
   width: 70px;
   height: 120px;
   z-index: 30;
   filter: drop-shadow(1px 3px 7px #3333);
   transition: bottom 0.08s;
-  object-fit: contain; /* Make sure the image scales nicely */
+  object-fit: contain;
   margin: 0;
   padding: 0;
-  user-select: none; /* Prevents text/image selection on player */
-  pointer-events: none; /* Prevents mouse events like click/drag highlight */
+  user-select: none;
+  pointer-events: none;
+  display: block;
 }
+
 .dog {
   position: absolute;
-  bottom: -30px; /* Moved 30px lower from 0px */
-  left: 10px; /* Moved right from -40px to show the whole dog */
+  bottom: 16px; /* Fixed to match PLAYER_Y - 2 (was 48px) */
+  left: 10px;
   width: 110px;
   height: 70px;
   z-index: 20;
@@ -276,8 +278,9 @@ body {
   object-fit: contain;
   margin: 0;
   padding: 0;
-  user-select: none; /* Prevents text/image selection on dog */
-  pointer-events: none; /* Prevents mouse events like click/drag highlight */
+  user-select: none;
+  pointer-events: none;
+  display: block;
 }
 
 /* Update person styling (replacing door) */
@@ -312,25 +315,29 @@ body {
   transition: box-shadow 0.15s;
   cursor: pointer;
   box-sizing: border-box;
+  display: block; /* Ensure it's visible */
+  opacity: 1; /* Make sure it's not transparent */
 }
 
 .door.glow {
   box-shadow: 0 0 22px 8px #FFC907, 0 0 0 3px #FFC907;
 }
 
-/* Obstacles (hydrant) - Update to match new ground level */
+/* Obstacles (snake) - Make sure it's visible */
 .hydrant {
   position: absolute;
-  bottom: 114px; /* Updated to match the new ground level where people are positioned */
-  width: 42px;
-  height: 95px;
-  background: url('img/fire_hydrant_2.png');
+  bottom: 135px;
+  width: 180px; /* Visual size */
+  height: 56px; /* Visual size */
+  background: url('img/aggressive_snake-removebg-preview.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   z-index: 13;
   user-select: none;
   pointer-events: none;
+  display: block; /* Ensure it's visible */
+  opacity: 1; /* Make sure it's not transparent */
 }
 
 .confetti {

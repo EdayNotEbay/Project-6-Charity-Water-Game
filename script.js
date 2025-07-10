@@ -6,7 +6,6 @@ const GROUND_LEVEL = 144; // Ground level for people
 const DOG_START_X = 10;
 const PLAYER_X = 170;
 const GROUND_HEIGHT = 45;
-const BACKGROUND_SPEED = 5.8;
 const DOG_CHASE_SPEED = 4.8;
 
 // Updated spawning for exactly 1 person per background rotation - using actual background image width

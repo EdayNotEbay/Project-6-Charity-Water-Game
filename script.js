@@ -258,31 +258,12 @@ function showMilestone(elementId, message) {
 
 // Function to check distance milestones
 function checkDistanceMilestones(currentDistance) {
-  if (currentDistance >= 100 && lastDistanceMilestone === 0) {
-    const message = `You traveled 100 feet!`;
+  // Show a milestone every 1000 feet (1000, 2000, 3000, ...) with no upper limit
+  if (currentDistance > 0 && currentDistance % 1000 === 0 && currentDistance !== lastDistanceMilestone) {
+    const message = `You traveled ${currentDistance.toLocaleString()} feet!`;
     playSound(distanceMilestoneSound);
     showMilestone('distance-milestone', message);
-    lastDistanceMilestone = 100;
-  } else if (currentDistance >= 500 && lastDistanceMilestone === 100) {
-    const message = `You traveled 500 feet!`;
-    playSound(distanceMilestoneSound);
-    showMilestone('distance-milestone', message);
-    lastDistanceMilestone = 500;
-  } else if (currentDistance >= 1000 && lastDistanceMilestone === 500) {
-    const message = `You traveled 1,000 feet!`;
-    playSound(distanceMilestoneSound);
-    showMilestone('distance-milestone', message);
-    lastDistanceMilestone = 1000;
-  } else if (currentDistance >= 2000 && lastDistanceMilestone === 1000) {
-    const message = `You traveled 2,000 feet!`;
-    playSound(distanceMilestoneSound);
-    showMilestone('distance-milestone', message);
-    lastDistanceMilestone = 2000;
-  } else if (currentDistance >= 5000 && lastDistanceMilestone === 2000) {
-    const message = `You traveled 5,000 feet!`;
-    playSound(distanceMilestoneSound);
-    showMilestone('distance-milestone', message);
-    lastDistanceMilestone = 5000;
+    lastDistanceMilestone = currentDistance;
   }
 }
 

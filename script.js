@@ -71,6 +71,10 @@ const finalWater = document.getElementById('final-water');
 const resetBtn = document.getElementById('reset-btn');
 const heart1 = document.getElementById('heart1');
 const heart2 = document.getElementById('heart2');
+const pauseBtn = document.getElementById('pause-btn');
+const endBtn = document.getElementById('end-btn');
+const pauseIcon = document.getElementById('pause-icon');
+const resumeIcon = document.getElementById('resume-icon');
 
 // ====== GAME STATE ======
 let gameState = "start";
@@ -82,6 +86,7 @@ let playerJumping = false, playerY = PLAYER_Y, jumpVel = 0;
 let dogX = DOG_START_X, dogChasing = false, confettiTimer = null;
 let lives = 2, lastDistanceMilestone = 0, lastWaterMilestone = 0;
 let selectedDifficulty = null, BACKGROUND_SPEED = DIFFICULTY_SPEEDS.normal, GRAVITY = DIFFICULTY_GRAVITY.normal;
+let paused = false;
 
 // ====== UTILITY ======
 const px = val => val + 'px';
@@ -263,11 +268,58 @@ function triggerDogChase() {
   }
 }
 
+// ====== PAUSE/RESUME LOGIC ======
+function pauseGame() {
+  if (paused || gameState !== "running") return;
+  paused = true;
+  clearInterval(runningInterval);
+  pauseIcon.style.display = "none";
+  resumeIcon.style.display = "inline";
+  // Pause the background music when the game is paused
+  stopSound(backgroundMusic);
+}
+
+function resumeGame() {
+  if (!paused || gameState !== "running") return;
+  paused = false;
+  runningInterval = setInterval(gameTick, TICK_INTERVAL);
+  pauseIcon.style.display = "inline";
+  resumeIcon.style.display = "none";
+  // Resume the background music when the game is resumed
+  playSound(backgroundMusic);
+}
+
+function togglePause() {
+  if (!paused) {
+    pauseGame();
+  } else {
+    resumeGame();
+  }
+}
+
+// ====== END GAME LOGIC ======
+function endGameToStartOverlay() {
+  // This is like pressing "Restart Game" but goes to start overlay
+  clearInterval(runningInterval);
+  stopSound(backgroundMusic);
+  gameOverOverlay.classList.remove('show');
+  showStartOverlay();
+  clearDifficultySelection();
+  selectedDifficulty = null;
+  startBtn.disabled = true;
+  paused = false;
+  pauseIcon.style.display = "inline";
+  resumeIcon.style.display = "none";
+}
+
 // ====== GAME LOOP ======
 function startGame() {
   if (!selectedDifficulty) { alert('Please select a difficulty first!'); return; }
   resetGameVars(); showGameMain(); updateScores();
   gameState = "running";
+  paused = false;
+  pauseIcon.style.display = "inline";
+  resumeIcon.style.display = "none";
   runningInterval = setInterval(gameTick, TICK_INTERVAL);
   document.addEventListener('keydown', jumpHandler);
   gameMain.addEventListener('mousedown', doorClickHandler);
@@ -285,7 +337,7 @@ function endGame() {
 }
 
 function gameTick() {
-  if (gameState !== "running") return;
+  if (gameState !== "running" || paused) return;
   backgroundPos -= BACKGROUND_SPEED;
   backgroundHouses.style.backgroundPositionX = px(backgroundPos);
 
@@ -428,7 +480,12 @@ startBtn.addEventListener('click', () => { hideStartOverlay(); setTimeout(startG
 resetBtn.addEventListener('click', () => {
   stopSound(backgroundMusic); gameOverOverlay.classList.remove('show');
   showStartOverlay(); clearDifficultySelection(); selectedDifficulty = null; startBtn.disabled = true;
+  paused = false;
+  pauseIcon.style.display = "inline";
+  resumeIcon.style.display = "none";
 });
+pauseBtn.addEventListener('click', togglePause);
+endBtn.addEventListener('click', endGameToStartOverlay);
 document.addEventListener('selectstart', e => { e.preventDefault(); return false; });
 document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
 document.addEventListener('dblclick', e => { e.preventDefault(); return false; });

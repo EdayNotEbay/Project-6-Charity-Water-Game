@@ -268,6 +268,22 @@ function triggerDogChase() {
   }
 }
 
+// Helper to pause all sounds and music
+function pauseAllSounds() {
+  stopSound(backgroundMusic);
+  stopSound(dogBarkSound);
+  stopSound(jumpSound);
+  stopSound(waterDeliverySound);
+  stopSound(gameOverSound);
+  stopSound(distanceMilestoneSound);
+  stopSound(waterMilestoneSound);
+}
+
+// Helper to resume only background music
+function resumeMusic() {
+  playSound(backgroundMusic);
+}
+
 // ====== PAUSE/RESUME LOGIC ======
 function pauseGame() {
   if (paused || gameState !== "running") return;
@@ -275,8 +291,8 @@ function pauseGame() {
   clearInterval(runningInterval);
   pauseIcon.style.display = "none";
   resumeIcon.style.display = "inline";
-  // Pause the background music when the game is paused
-  stopSound(backgroundMusic);
+  // Pause all sounds and music
+  pauseAllSounds();
 }
 
 function resumeGame() {
@@ -285,8 +301,8 @@ function resumeGame() {
   runningInterval = setInterval(gameTick, TICK_INTERVAL);
   pauseIcon.style.display = "inline";
   resumeIcon.style.display = "none";
-  // Resume the background music when the game is resumed
-  playSound(backgroundMusic);
+  // Resume only background music
+  resumeMusic();
 }
 
 function togglePause() {
@@ -490,3 +506,19 @@ document.addEventListener('selectstart', e => { e.preventDefault(); return false
 document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
 document.addEventListener('dblclick', e => { e.preventDefault(); return false; });
 document.addEventListener('DOMContentLoaded', () => { showStartOverlay(); });
+
+// Prevent pause button from keeping focus after click (so spacebar doesn't trigger it)
+pauseBtn.addEventListener('mousedown', function(e) {
+  // Remove focus after mouse click
+  pauseBtn.blur();
+});
+pauseBtn.addEventListener('mouseup', function(e) {
+  // Remove focus after mouse click
+  pauseBtn.blur();
+});
+pauseBtn.addEventListener('keydown', function(e) {
+  // Prevent space/enter from triggering button click
+  if (e.code === "Space" || e.key === " " || e.keyCode === 32) {
+    e.preventDefault();
+  }
+});

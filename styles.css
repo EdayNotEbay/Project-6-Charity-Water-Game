@@ -60,20 +60,53 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 28px 8px 28px; /* Reduced padding to prevent pushing background down */
+  padding: 8px 28px 8px 28px;
   box-sizing: border-box;
   z-index: 10;
-  height: 60px; /* Set fixed height for header */
-  pointer-events: none; /* Prevent clicking on header area */
+  height: 60px;
+  pointer-events: none;
+  position: relative; /* Needed for absolute centering */
 }
-.game-header .logo {
-  width: auto; /* Let width adjust automatically */
-  height: 56px; /* Use almost all of the 60px header height */
-  max-height: 56px;
-  margin: 0 auto 0 auto;
+.logo-center-group {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 20;
+}
+.logo {
+  margin: 0 8px !important;
   display: block;
-  object-fit: contain; /* Maintain aspect ratio while filling space */
-  pointer-events: none; /* Prevent clicking on logo */
+  height: 38px !important; /* Make logo smaller and consistent */
+  width: auto !important;
+  max-height: 38px !important;
+  object-fit: contain;
+}
+.header-btn {
+  background: #222;
+  color: #FFC907;
+  border: none;
+  border-radius: 7px;
+  font-size: 1em;
+  font-weight: 600;
+  padding: 7px 14px;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 7px #0002;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+.header-btn:hover {
+  background: #444;
+  color: #fff;
 }
 .score-box {
   background: var(--score-bg);
@@ -536,7 +569,6 @@ body {
   gap: 18px;
   margin-bottom: 18px;
 }
-
 .difficulty-btn {
   background: #111;
   color: #f75e5e;
@@ -550,14 +582,12 @@ body {
   transition: background 0.2s, color 0.2s;
   font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
 .difficulty-btn.selected,
 .difficulty-btn:focus {
   background: #222;
   color: #FFC907;
   outline: none;
 }
-
 #easy-btn {
   color: blue;
 }
@@ -565,7 +595,6 @@ body {
 #easy-btn:focus {
   color: blue;
 }
-
 #normal-btn {
   color: #CBCCD1;
 }
@@ -573,15 +602,12 @@ body {
 #normal-btn:focus {
   color: #CBCCD1;
 }
-
-/* Only change the font color for the Hard button */
 #hard-btn {
-  color: #dc143c; /* dark blood red text */
-  /* keep all other styling the same as .difficulty-btn */
+  color: #dc143c;
 }
 #hard-btn.selected,
 #hard-btn:focus {
-  color: #dc143c; /* dark blood red text */
+  color: #dc143c;
 }
 
 .heart-img {
@@ -595,26 +621,4 @@ body {
 .player.flash {
   filter: brightness(3) grayscale(1);
   transition: filter 0.1s;
-}
-
-.header-btn {
-  background: #222;
-  color: #FFC907;
-  border: none;
-  border-radius: 7px;
-  font-size: 1em;
-  font-weight: 600;
-  padding: 7px 18px;
-  margin: 0 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 7px #0002;
-  transition: background 0.2s, color 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  pointer-events: auto;
-}
-.header-btn:hover {
-  background: #444;
-  color: #fff;
 }

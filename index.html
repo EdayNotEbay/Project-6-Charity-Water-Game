@@ -12,25 +12,28 @@
   <div id="game-container">
     <!-- HEADER (Scores + Branding) -->
     <div class="game-header">
-      <div class="score-box" id="distance-score">
-        Distance (ft): 0
+      <div style="display: flex; align-items: center;">
+        <div class="score-box" id="distance-score">
+          Distance (ft): 0
+        </div>
+        <!-- Hearts are now directly to the right of distance score, before the logo group -->
+        <div class="score-hearts" style="display: flex; align-items: center; gap: 6px; margin-left: 12px;">
+          <img src="img/heart.png" id="heart1" class="heart-img" alt="Heart 1" style="width:32px; height:32px; transition: opacity 0.5s;"/>
+          <img src="img/heart.png" id="heart2" class="heart-img" alt="Heart 2" style="width:32px; height:32px; transition: opacity 0.5s;"/>
+        </div>
       </div>
-      <!-- Hearts for lives (moved to the right of distance score) -->
-      <div id="hearts" style="display: flex; align-items: center; gap: 6px; margin-left: 12px;">
-        <img src="img/heart.png" id="heart1" class="heart-img" alt="Heart 1" style="width:32px; height:32px; transition: opacity 0.5s;"/>
-        <img src="img/heart.png" id="heart2" class="heart-img" alt="Heart 2" style="width:32px; height:32px; transition: opacity 0.5s;"/>
+      <!-- Centered logo and buttons container -->
+      <div class="logo-center-group">
+        <button id="pause-btn" class="header-btn">
+          Pause Game
+          <span id="pause-icon" style="font-size:1.3em;">⏸️</span>
+          <span id="resume-icon" style="font-size:1.3em; display:none;">▶️</span>
+        </button>
+        <img class="logo" src="img/charity_water_logo.png" alt="Charity Water logo"/>
+        <button id="end-btn" class="header-btn">
+          End Game
+        </button>
       </div>
-      <!-- Pause Game Button (left of logo) -->
-      <button id="pause-btn" class="header-btn" style="margin-left:18px; display:flex; align-items:center; gap:8px; pointer-events:auto;">
-        Pause Game
-        <span id="pause-icon" style="font-size:1.3em;">⏸️</span>
-        <span id="resume-icon" style="font-size:1.3em; display:none;">▶️</span>
-      </button>
-      <img class="logo" src="img/charity_water_logo.png" alt="Charity Water logo"/>
-      <!-- End Game Button (right of logo) -->
-      <button id="end-btn" class="header-btn" style="margin-right:18px; pointer-events:auto;">
-        End Game
-      </button>
       <div class="score-box" id="water-score">
         Water Delivered: 0
       </div>

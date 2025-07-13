@@ -934,7 +934,7 @@ body {
   }
 }
 
-/* Difficulty buttons styling */
+/* Difficulty buttons styling - desktop */
 .difficulty-btns {
   display: flex;
   flex-direction: row;
@@ -952,8 +952,12 @@ body {
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 6px 16px #0007;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, font-size 0.2s, padding 0.2s;
   font-family: 'Nunito Sans', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+  width: auto;
+  min-width: 120px;
+  max-width: 320px;
+  text-align: center;
 }
 .difficulty-btn.selected,
 .difficulty-btn:focus {
@@ -981,6 +985,56 @@ body {
 #hard-btn.selected,
 #hard-btn:focus {
   color: #dc143c;
+}
+
+/* Responsive scaling for difficulty buttons */
+@media (max-width: 1200px) {
+  .difficulty-btns {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .difficulty-btn {
+    font-size: 1.5em;
+    padding: 14px 36px;
+    min-width: 90px;
+    max-width: 220px;
+  }
+}
+@media (max-width: 900px) {
+  .difficulty-btns {
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .difficulty-btn {
+    font-size: 1.2em;
+    padding: 10px 0;
+    width: 90vw;
+    max-width: 320px;
+    min-width: 80px;
+    margin: 0 auto 8px auto;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px #0005;
+    display: block;
+  }
+}
+@media (max-width: 600px) {
+  .difficulty-btns {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .difficulty-btn {
+    font-size: 1em;
+    padding: 7px 0;
+    width: 96vw;
+    max-width: 220px;
+    min-width: 60px;
+    margin: 0 auto 5px auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px #0005;
+    display: block;
+  }
 }
 
 .heart-img {
